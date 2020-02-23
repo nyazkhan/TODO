@@ -1,0 +1,99 @@
+
+<div cdkDropListGroup class="container-fluid">
+
+  <div class="row m-auto p-auto">
+
+    <div class="col-md-3 mt-3 " *ngFor="let todo of list.todolistArray; let i = index">
+      <div class="card text-white " [ngStyle]="{'background-color': getColor(i+1)}">
+        <h5 class="card-header">{{todo.name}}
+          <span class="badge ">{{todo.tasksList.length}}</span>
+          <!-- <span *ngIf="i==1" class="badge badge-light ">Add task</span> -->
+          <button *ngIf="i==1" type="button" class="btn btn-light ml-5" (click)="openModel('Add')" >Add Task</button>
+
+        </h5>
+        <div class="card-body" cdkDropList [cdkDropListData]="todo.tasksList" class="example-list"
+          (cdkDropListDropped)="drop($event , i)">
+          <div class="example-box" [ngStyle]="{'color': getColor(i+1)}"
+            *ngFor="let item of todo.tasksList; let z=index;" cdkDrag>
+            <span style="float: left;">
+
+              {{item.title}}
+            </span>
+
+
+            <span style="float: right;">
+
+              <i class="fa fa-eye fa-lg mr-2 ml-2 " (click)="openModel('View',item)"></i>
+              <i class="fa fa-edit fa-lg mr-2 ml-2  " (click)="openModel('Edit', item)"></i>
+              <i class="fa fa-trash fa-lg mr-2 ml-2 " (click)="delete( todo.tasksList , z)"></i>
+              <i class="fa fa-arrows example-handle fa-lg mr-2 ml-2 " cdkDragHandle></i>
+
+              <!-- <span class="example-handle m-2 p-2" cdkDragHandle>
+               <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+                 <path
+                   d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z">
+                 </path>
+                 <path d="M0 0h24v24H0z" fill="none"></path>
+               </svg>
+             
+           </span> -->
+            </span>
+
+          </div>
+
+        </div>
+
+
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="taskModel" tabindex="-1" role="dialog" aria-labelledby="taskModelLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="taskModelLabel"> {{modelPurposeForOpen}} Task Details</h5>
+        <button type="button" class="close" (click)="closeModel()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="task-type" class="col-form-label"> Task Status </label>
+
+            <!-- [disabled]="((modelPurposeForOpen == 'View')||(modelPurposeForOpen =='Edit'))" -->
+            <select [(ngModel)]="taskForm.status" name="status"
+              [disabled]="true" class="custom-select"
+              id="selectStatus">
+              <option selected value="1">Today's</option>
+              <option value="0">Pending</option>
+              <option value="2">Inprogress</option>
+              <option value="4">Complete</option>
+              <option value="3">Abandon</option>
+            </select>
+            <label for="task-name" class="col-form-label">Task Title:</label>
+            <input type="text" class="form-control" [(ngModel)]="taskForm.title"
+              [disabled]="modelPurposeForOpen == 'View'" name="title" id="task-name">
+          </div>
+          <div class="form-group">
+            <label for="task-desc" class="col-form-label"> Task Detils </label>
+            <textarea class="form-control" [(ngModel)]="taskForm.desc" [disabled]="modelPurposeForOpen == 'View'"
+              name="desc" id="task-desc"></textarea>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModel()">Close</button>
+        <button type="button" [disabled]=" ((!taskForm.title) || (!taskForm.desc)) " *ngIf="modelPurposeForOpen !== 'View'" class="btn btn-primary"
+          (click)="Addtask(taskForm)">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

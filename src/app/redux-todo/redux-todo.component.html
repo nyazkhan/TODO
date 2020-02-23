@@ -1,0 +1,74 @@
+<div class="container-fluid m-auto">
+  <div class="card mt-3">
+    <div class="card-body">
+
+      <h6>Create Todo:</h6>
+      <form (ngSubmit)="obSubmit()" #todoForm="ngForm">
+        <div class="form-row">
+          <div class="col-auto">
+            <input type="text" class="form-control" placeholder="title" id="title" [(ngModel)]="model.title"
+              name="title" #title="ngModel">
+          </div>
+          <div class="col-auto">
+            <input type="text" class="form-control" placeholder="desc" id="desc" [(ngModel)]="model.desc" name="desc"
+              #desc="ngModel">
+          </div>
+          <div class="col-auto">
+            <select class="form-control" id="status" [disabled]="taskAction == 'add'" [(ngModel)]="model.status"
+              name="status" #status="ngModel">
+              <option value="1">Today's</option>
+              <option value="0">Pending</option>
+              <option value="2">Inprogress</option>
+              <option value="4">Complete</option>
+              <option value="3">Abandon</option>
+            </select>
+          </div>
+          <div class="col-auto">
+            <button *ngIf="taskAction=='add'" type="submit" class="btn btn-primary">
+
+              Create
+
+            </button>
+            <button *ngIf="taskAction=='edit'" type="submit" class="btn btn-primary">
+
+              Update
+
+            </button>
+          </div>
+        </div>
+      </form>
+      <br />
+     
+      <div *ngIf="(todos | async)?.length!=0">
+        <table class="table">
+          <thead class="thead-inverse">
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of todos | async">
+              <td><span>{{ t.id }}</span></td>
+              <td><span>{{ t.title }}</span></td>
+              <td><span>{{ t.desc }}</span></td>
+              <td>
+                <span *ngIf="t.status == '0'" class="badge badge-success">Pending</span>
+                <span *ngIf="t.status == '1'" class="badge badge-primary">Today's</span>
+                <span *ngIf="t.status == '2'" class="badge badge-secondary">Inprogress</span>
+                <span *ngIf="t.status == '3'" class="badge badge-danger ">Abandon</span>
+                <span *ngIf="t.status == '4'" class="badge badge-warning">Complete</span>
+              </td>
+              <td><button class="btn btn-primary mr-3" (click)="model = t; taskAction = 'edit'">edit</button>
+                <button class="btn btn-primary" (click)="removeTodo(t)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
